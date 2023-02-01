@@ -46,7 +46,7 @@ function clearnEffect(effect) {
 
 const targetMap = new Map();
 export function track(target, key) {
-  if(!isTracking()) return 
+  if (!isTracking()) return;
 
   let depsMap = targetMap.get(target);
   if (!depsMap) {
@@ -59,27 +59,37 @@ export function track(target, key) {
     depsMap.set(key, dep);
   }
   // 双向数据保存
-  if(dep.has(activeEffect)) return
+  trackEffects(dep);
+}
+
+// 收集事件
+export function trackEffects(dep) {
+  if (dep.has(activeEffect)) return;
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
 }
 
-function isTracking() {
-  return shouldTrack && activeEffect !== undefined
+export function isTracking() {
+  return shouldTrack && activeEffect !== undefined;
 }
 
 export function trigger(target, key) {
   if (targetMap.has(target)) {
     let depsMap = targetMap.get(target);
     if (depsMap.has(key)) {
-      let deps = depsMap.get(key);
-      for (let fn of deps) {
-        if (fn.scheduler) {
-          fn.scheduler();
-        } else {
-          fn.run();
-        }
-      }
+      let dep = depsMap.get(key);
+      triggerEffects(dep);
+    }
+  }
+}
+
+// 触发事件
+export function triggerEffects(dep) {
+  for (let effec of dep) {
+    if (effec.scheduler) {
+      effec.scheduler();
+    } else {
+      effec.run();
     }
   }
 }

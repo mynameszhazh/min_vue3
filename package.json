@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "jw": "jest --watch"
   },
   "repository": "git@github.com:mynameszhazh/min_vue3.git",
   "author": "mynameszhazh <1594776259@qq.com>",
