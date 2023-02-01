@@ -13,6 +13,10 @@ export function isReadonly(obj) {
   return !!obj[ReactiveFlags.IS_READONLY];
 }
 
+export function isProxy(val) {
+  return isReactive(val) || isReadonly(val)
+}
+
 export function reactive(obj) {
   return createActiveObject(obj, mutableHandles);
 }
