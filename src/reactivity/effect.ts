@@ -1,4 +1,8 @@
-import { extend } from './../shared/index';
+import { extend } from "./../shared/index";
+
+let activeEffect;
+let shouldTrack;
+
 class ReactiveEffect {
   private _fn: any;
   deps = [];
@@ -8,9 +12,17 @@ class ReactiveEffect {
     this._fn = fn;
   }
   run() {
+    // 如果不是响应式数据
+    if (!this.active) {
+      return this._fn();
+    }
+
     activeEffect = this;
+    shouldTrack = true;
+    const ret = this._fn();
+    shouldTrack = false;
     // this._fn();
-    return this._fn();
+    return ret;
   }
 
   stop() {
@@ -28,10 +40,14 @@ function clearnEffect(effect) {
   effect.deps.forEach((dep) => {
     dep.delete(effect);
   });
+  // 这里已经不存在内容了
+  effect.deps.length = 0;
 }
 
 const targetMap = new Map();
 export function track(target, key) {
+  if(!isTracking()) return 
+
   let depsMap = targetMap.get(target);
   if (!depsMap) {
     depsMap = new Map();
@@ -42,12 +58,14 @@ export function track(target, key) {
     dep = new Set();
     depsMap.set(key, dep);
   }
-
-  if(!activeEffect) return
-
   // 双向数据保存
+  if(dep.has(activeEffect)) return
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
+}
+
+function isTracking() {
+  return shouldTrack && activeEffect !== undefined
 }
 
 export function trigger(target, key) {
@@ -65,11 +83,11 @@ export function trigger(target, key) {
     }
   }
 }
-let activeEffect;
+
 export function effect(fn, options: any = {}) {
   const _effect = new ReactiveEffect(fn, options.scheduler);
 
-  extend(_effect, options)
+  extend(_effect, options);
 
   _effect.run();
 
