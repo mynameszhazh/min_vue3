@@ -3,9 +3,10 @@ import { isTracking, trackEffects, triggerEffects } from "./effect";
 import { reactive } from "./reactive";
 
 class RefImpl {
-  private _value: any;
   public dep: Set<any>;
+  public _v_isRef = true;
   private _rawValue: any;
+  private _value: any;
   constructor(value) {
     this._rawValue = value;
     this._value = convert(value);
@@ -35,4 +36,27 @@ function convert(value) {
 
 export function ref(val) {
   return new RefImpl(val);
+}
+
+export function isRef(ref) {
+  return !!ref._v_isRef;
+}
+
+export function unRef(ref) {
+  return isRef(ref) ? ref.value : ref;
+}
+
+export function proxyRefs(objectWithRef) {
+  return new Proxy(objectWithRef, {
+    get(target, key) {
+      return unRef(Reflect.get(target, key));
+    },
+    set(target, key, newValue) {
+      // 只有这样才需要直接赋值
+      if (isRef(target[key]) && !isRef(newValue)) {
+        return (target[key].value = newValue);
+      }
+      return Reflect.set(target, key, newValue);
+    },
+  });
 }

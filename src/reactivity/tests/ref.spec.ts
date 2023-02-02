@@ -1,5 +1,6 @@
 import { effect } from "../effect";
-import { ref } from "../ref";
+import { reactive } from "../reactive";
+import { ref, isRef, unRef, proxyRefs } from "../ref";
 
 describe("ref", () => {
   it("happy path", () => {
@@ -38,5 +39,41 @@ describe("ref", () => {
     expect(dumy).toBe(1);
     wrapobj.value.foo = 2;
     expect(dumy).toBe(2);
+  });
+
+  it("isref", () => {
+    let ret = 0;
+    let ret1 = ref(1);
+    let ret2 = reactive({ foo: 123 });
+    expect(isRef(ret)).toBe(false);
+    expect(isRef(ret1)).toBe(true);
+    expect(isRef(ret2)).toBe(false);
+  });
+
+  it("unRef", () => {
+    let ret = 1;
+    let ret1 = ref(1);
+    expect(unRef(ret)).toBe(1);
+    expect(unRef(ret1)).toBe(1);
+  });
+
+  it("proxyRefs", () => {
+    let obj = {
+      foo: ref(1),
+      name: "myname",
+    };
+    let proxyObj = proxyRefs(obj);
+    expect(obj.foo.value).toBe(1);
+    expect(proxyObj.name).toBe("myname");
+    expect(proxyObj.foo).toBe(1);
+
+    proxyObj.foo = 20;
+    expect(proxyObj.foo).toBe(20);
+    expect(obj.foo.value).toBe(20);
+    // set -> ref .value
+
+    proxyObj.foo = ref(10);
+    expect(proxyObj.foo).toBe(10);
+    expect(obj.foo.value).toBe(10);
   });
 });
