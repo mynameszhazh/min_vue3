@@ -30,10 +30,15 @@ export const App = {
     //   "xjh 123"
     // );
 
-    // 组件嵌套
+    // 组件嵌套 + props + emit
     return h("div", { class: ["red"] }, [
       h("h2", {}, "h2h2h2h"),
-      h(Foo, { count: 2 }),
+      h(Foo, {
+        count: 2,
+        'on-add': (e, a) => {
+          console.log("onAdd", e, a);
+        },
+      }),
     ]);
   },
   setup() {
