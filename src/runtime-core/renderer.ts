@@ -50,6 +50,11 @@ function processElement(vnode: any, container: any) {
   const { props } = vnode;
   for (let key in props) {
     const val = props[key];
+    let isOn = (key: string) => /^on[A-Z]/.test(key);
+    if (isOn(key)) {
+      const event = key.slice(2).toLocaleLowerCase();
+      el.addEventListener(event, val);
+    }
     el.setAttribute(key, val);
   }
   container.appendChild(el);
