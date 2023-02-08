@@ -31,14 +31,22 @@ export const App = {
     // );
 
     // 组件嵌套 + props + emit
-    return h("div", { class: ["red"] }, [
+    return h("div", { name: "App", class: ["red"] }, [
       h("h2", {}, "h2h2h2h"),
-      h(Foo, {
-        count: 2,
-        'on-add': (e, a) => {
-          console.log("onAdd", e, a);
+      h(
+        Foo,
+        {
+          count: 2,
+          "on-add": (e, a) => {
+            console.log("onAdd", e, a);
+          },
         },
-      }),
+        {
+          header: ({ age }) => h("p", {}, "header" + age),
+          footer: () => h("p", {}, "footer"),
+        }
+        // h("p", {}, "1234")
+      ),
     ]);
   },
   setup() {
