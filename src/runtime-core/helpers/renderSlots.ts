@@ -1,8 +1,8 @@
-import { createVnode } from "../vnode";
+import { createVnode, Fragment } from "../vnode";
 
 export function renderSlots(slots, key, props = {}) {
   let slot = slots[key];
   if (slot) {
-    return createVnode("div", {}, slot(props));
+    return createVnode(Fragment, {}, slot(props));
   }
 }

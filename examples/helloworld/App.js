@@ -1,4 +1,4 @@
-import { h } from "../../lib/guide-mini-vue.esm.js";
+import { h, createTextVnode } from "../../lib/guide-mini-vue.esm.js";
 import { Foo } from "./Foo.js";
 
 export const App = {
@@ -31,7 +31,7 @@ export const App = {
     // );
 
     // 组件嵌套 + props + emit
-    return h("div", { name: "App", class: ["red"] }, [
+    return h("div", { name: "App" }, [
       h("h2", {}, "h2h2h2h"),
       h(
         Foo,
@@ -42,7 +42,10 @@ export const App = {
           },
         },
         {
-          header: ({ age }) => h("p", {}, "header" + age),
+          header: ({ age }) => [
+            h("p", {}, "header" + age),
+            createTextVnode("你好啊"),
+          ],
           footer: () => h("p", {}, "footer"),
         }
         // h("p", {}, "1234")
