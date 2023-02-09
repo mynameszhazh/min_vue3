@@ -4,13 +4,17 @@ import { initProps } from "./componentProps";
 import { PublicInstanceProxyHandlers } from "./componentPublicInstance";
 import { initSlots } from "./componentSlot";
 
-export function createComponentInstance(vnode: any) {
+export function createComponentInstance(vnode: any, parent: any) {
+  // console.log(parent, "parent");
   let component = {
     vnode,
     type: vnode.type,
     setupState: {},
     props: {},
     slots: {},
+    // todo 这里不会出现原型链的问题
+    provides: parent ? parent.provides : {},
+    parent,
     emit: () => {},
   };
   component.emit = emit as any;
