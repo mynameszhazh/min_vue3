@@ -1,3 +1,4 @@
+import { proxyRefs } from "../reactivity";
 import { shallowReadonly } from "../reactivity/reactive";
 import { emit } from "./componentEmit";
 import { initProps } from "./componentProps";
@@ -14,6 +15,8 @@ export function createComponentInstance(vnode: any, parent: any) {
     slots: {},
     // todo 这里不会出现原型链的问题
     provides: parent ? parent.provides : {},
+    isMounted: false,
+    subTree: null,
     parent,
     emit: () => {},
   };
@@ -50,7 +53,7 @@ function setupStateFulComponent(instance: any) {
 function handleSetupResult(instance, setupResult: any) {
   // TODO function
   if (typeof setupResult === "object") {
-    instance.setupState = setupResult;
+    instance.setupState = proxyRefs(setupResult);
   }
   finishComponentSetup(instance);
 }
