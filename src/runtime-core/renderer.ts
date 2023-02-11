@@ -4,10 +4,13 @@ import { createComponentInstance, setupComponent } from "./component";
 import { createAppApi } from "./createApp";
 
 export function createRenderer(options) {
-  let { createElement, insert, patchProp } = options;
+  let {
+    createElement: hostCreateElement,
+    insert: hostInsert,
+    patchProp: hostPatchProp,
+  } = options;
 
   function render(vnode, container) {
-    container = document.querySelector(container);
     patch(vnode, container, null);
   }
 
@@ -53,7 +56,7 @@ export function createRenderer(options) {
   }
   function processElement(vnode: any, container: any, parentComponent) {
     //
-    const el = (vnode.el = createElement(vnode));
+    const el = (vnode.el = hostCreateElement(vnode));
 
     const { children, shapeFlag } = vnode;
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
@@ -66,10 +69,10 @@ export function createRenderer(options) {
     const { props } = vnode;
     for (let key in props) {
       const val = props[key];
-      patchProp(el, key, val);
+      hostPatchProp(el, key, val);
     }
     // container.appendChild(el);
-    insert(el, container);
+    hostInsert(el, container);
   }
 
   function mountChildren(vnode: any, container: any, parentComponent) {
