@@ -23,10 +23,24 @@ function patchProp(el, key, preVal, newVal) {
   }
 }
 
+function remove(child) {
+  const parent = child.parentNode;
+  if (parent) {
+    parent.removeChild(child);
+  }
+}
+
+function setElementText(el, text) {
+  // console.log(el, text);
+  el.textContent = text;
+}
+
 const renderer: any = createRenderer({
   createElement,
   insert,
   patchProp,
+  remove,
+  setElementText,
 });
 
 export function createApp(...arg) {
