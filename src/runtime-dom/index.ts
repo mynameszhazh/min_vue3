@@ -6,8 +6,9 @@ function createElement(vnode) {
   return el;
 }
 
-function insert(el, parent) {
-  parent.appendChild(el);
+function insert(child, parent, anthor) {
+  // parent.appendChild(el);
+  parent.insertBefore(child, anthor || null);
 }
 
 function patchProp(el, key, preVal, newVal) {
