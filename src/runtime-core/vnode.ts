@@ -1,6 +1,7 @@
 import { ShapeFlags } from "../shared/shapeFlags";
 export const Fragment = Symbol("Fragment");
 export const Text = Symbol("Text");
+export const EMPTY_OBJ = {}
 
 export function createVnode(type, props?, children?) {
   let vnode = {

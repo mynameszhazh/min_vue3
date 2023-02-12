@@ -1,4 +1,4 @@
-import { Fragment, Text } from "./vnode";
+import { EMPTY_OBJ, Fragment, Text } from "./vnode";
 import { ShapeFlags } from "./../shared/shapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
 import { createAppApi } from "./createApp";
@@ -74,18 +74,45 @@ export function createRenderer(options) {
     if (!n1) {
       mountElement(n2, container, parentComponent);
     } else {
+      // 更新操作
       patchElement(n1, n2, container);
     }
   }
 
   function patchElement(n1, n2, container) {
-    console.log("patchElement", container);
+    // console.log("patchElement", container);
     console.log("old", n1);
     console.log("new", n2);
+    let oldProps = n1.props || EMPTY_OBJ;
+    let newProps = n2.props || EMPTY_OBJ;
+    let el = (n2.el = n1.el);
+    patchProps(el, oldProps, newProps);
+  }
+
+  function patchProps(el, oldProps, newProps) {
+    if (oldProps !== newProps) {
+      for (const key in newProps) {
+        const prevProp = oldProps[key];
+        const nextProp = newProps[key];
+
+        if (prevProp !== nextProp) {
+          hostPatchProp(el, key, prevProp, nextProp);
+        }
+      }
+
+      if (oldProps !== EMPTY_OBJ) {
+        for (const key in oldProps) {
+          const prevProp = oldProps[key];
+          if (!(key in newProps)) {
+            hostPatchProp(el, key, prevProp, null);
+          }
+        }
+      }
+    }
   }
 
   function mountElement(n2, container, parentComponent) {
-    //
+    // 初始化的赋值
     const el = (n2.el = hostCreateElement(n2));
 
     const { children, shapeFlag } = n2;
@@ -99,7 +126,7 @@ export function createRenderer(options) {
     const { props } = n2;
     for (let key in props) {
       const val = props[key];
-      hostPatchProp(el, key, val);
+      hostPatchProp(el, key, null, val);
     }
     // container.appendChild(el);
     hostInsert(el, container);

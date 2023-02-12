@@ -10,13 +10,17 @@ function insert(el, parent) {
   parent.appendChild(el);
 }
 
-function patchProp(el, key, val) {
+function patchProp(el, key, preVal, newVal) {
   let isOn = (key: string) => /^on[A-Z]/.test(key);
   if (isOn(key)) {
     const event = key.slice(2).toLocaleLowerCase();
-    el.addEventListener(event, val);
+    el.addEventListener(event, newVal);
   }
-  el.setAttribute(key, val);
+  if (newVal === undefined || newVal === null) {
+    el.removeAttribute(key);
+  } else {
+    el.setAttribute(key, newVal);
+  }
 }
 
 const renderer: any = createRenderer({
