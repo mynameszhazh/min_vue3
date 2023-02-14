@@ -11,7 +11,7 @@ import { h, ref } from "../../lib/guide-mini-vue.esm.js";
 // const prevChildren = [
 //   h("div", { key: "A" }, "A"),
 //   h("div", { key: "B" }, "B"),
-//   h("div", { key: "D" }, "D"),
+//   h("div", { key: "C" }, "C"),
 //   h("div", { key: "E" }, "E"),
 // ];
 
@@ -25,7 +25,7 @@ import { h, ref } from "../../lib/guide-mini-vue.esm.js";
 // ];
 // const prevChildren = [
 //   h("div", { key: "D" }, "D"),
-//   h("div", { key: "E" }, "E"),
+//   h("div", { key: "A" }, "A"),
 //   h("div", { key: "B" }, "B"),
 //   h("div", { key: "C" }, "C"),
 // ];
@@ -61,6 +61,23 @@ const prevChildren = [
   h("div", { key: "c" }, "c"),
   h("div", { key: "d" }, "d"),
 ];
+
+// 中间对比 移动
+// const prevChildren = [
+//   // h("div", { key: "C" }, "C"),
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B"),
+//   h("div", { key: "C" }, "C"),
+//   h("div", { key: "D" }, "D"),
+//   h("div", { key: "E" }, "E"),
+// ];
+// const nextChildren = [
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "D" }, "D"),
+//   h("div", { key: "B" }, "B"),
+//   h("div", { key: "C" }, "C"),
+//   h("div", { key: "E" }, "E"),
+// ];
 
 export default {
   name: "ArrayToText",
