@@ -13,6 +13,7 @@ export function createComponentInstance(vnode: any, parent: any) {
     setupState: {},
     props: {},
     slots: {},
+    next: null,
     // todo 这里不会出现原型链的问题
     provides: parent ? parent.provides : {},
     isMounted: false,

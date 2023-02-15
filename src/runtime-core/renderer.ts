@@ -4,6 +4,7 @@ import { createComponentInstance, setupComponent } from "./component";
 import { createAppApi } from "./createApp";
 import { effect } from "../reactivity";
 import { getSequence } from "../shared/myUtils";
+import { shouldUpdateComponent } from "./updateComponentUtils";
 
 export function createRenderer(options) {
   let {
@@ -46,11 +47,30 @@ export function createRenderer(options) {
     parentComponent,
     anthor
   ) {
-    mountComponent(n2, container, parentComponent, anthor);
+    if (!n1) {
+      mountComponent(n2, container, parentComponent, anthor);
+    } else {
+      updateComponent(n1, n2);
+    }
+  }
+
+  function updateComponent(n1, n2) {
+    // 拿出保存的实例对象
+    const instance = (n2.component = n1.component);
+    if (shouldUpdateComponent(n1, n2)) {
+      instance.next = n2;
+      instance.update();
+    } else {
+      n2.el = n1.el;
+      instance.vnode = n2;
+    }
   }
 
   function mountComponent(initialVnode, container, parentComponent, anthor) {
-    let instance = createComponentInstance(initialVnode, parentComponent);
+    let instance = (initialVnode.component = createComponentInstance(
+      initialVnode,
+      parentComponent
+    ));
 
     // 处理 setup
     setupComponent(instance);
@@ -59,7 +79,7 @@ export function createRenderer(options) {
   }
 
   function setupRenderEffect(instance: any, ininalvnode, container, anthor) {
-    effect(() => {
+    instance.update = effect(() => {
       if (!instance.isMounted) {
         console.log("init");
         let { proxy } = instance;
@@ -71,7 +91,11 @@ export function createRenderer(options) {
         instance.isMounted = true;
       } else {
         console.log("update");
-        let { proxy } = instance;
+        let { proxy, next, vnode } = instance;
+        if (next) {
+          next.el = vnode.el;
+          updateComponentPreRender(instance, next);
+        }
         const subTree = instance.render.call(proxy);
         const preSubTree = instance.subTree;
         instance.subTree = subTree;
@@ -79,6 +103,14 @@ export function createRenderer(options) {
       }
     });
   }
+  function updateComponentPreRender(instance, nextVnode) {
+    instance.vnode = nextVnode;
+    instance.next = null;
+    // console.log(instance, nextVnode);
+
+    instance.props = nextVnode.props;
+  }
+
   function processElement(
     n1,
     n2: any,
@@ -205,7 +237,7 @@ export function createRenderer(options) {
 
         if (patched >= toBePatched) {
           hostRemove(prevChild.el);
-          continue 
+          continue;
         }
         let newIndex;
         if (prevChild.key !== null) {
