@@ -31,13 +31,31 @@ function parseChildren(context: any): any {
     node = parseInterplation(context);
   } else if (s.startsWith("<")) {
     if (/[a-z]/i.test(s[1])) {
-      console.log("parse elemetn");
       node = parseElement(context);
     }
   }
 
+  if (!node) {
+    node = parseText(context);
+  }
+
   nodes.push(node);
   return nodes;
+}
+function parseTextData(context, length) {
+  const content = context.source.slice(0, length);
+
+  advanceBy(context, length);
+  return content;
+}
+
+function parseText(context: any): any {
+  let content = parseTextData(context, context.source.length);
+
+  return {
+    type: NodeTypes.TEXT,
+    content,
+  };
 }
 
 function parseInterplation(context): any {
@@ -53,10 +71,10 @@ function parseInterplation(context): any {
   advanceBy(context, openDelimiter.length);
 
   const rawContentLength = closeIndex - openDelimiter.length;
-  const rawContent = context.source.slice(0, rawContentLength);
+  const rawContent = parseTextData(context, rawContentLength);
   const content = rawContent.trim();
 
-  advanceBy(context, rawContentLength + closeDelimiter.length);
+  advanceBy(context, closeDelimiter.length);
 
   return {
     type: NodeTypes.INTERPOLATION,
@@ -80,7 +98,7 @@ function parseTag(context: any, type: TagType) {
   advanceBy(context, match[0].length);
   advanceBy(context, 1);
 
-  if(type === TagType.END) return
+  if (type === TagType.END) return;
 
   return {
     type: NodeTypes.ELEMENT,
