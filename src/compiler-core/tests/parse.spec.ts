@@ -27,6 +27,7 @@ describe("parse", () => {
       expect(ast.children[0]).toStrictEqual({
         type: NodeTypes.ELEMENT,
         tag: "div",
+        children: [],
       });
     });
   });
@@ -41,5 +42,65 @@ describe("parse", () => {
         content: "some text",
       });
     });
+  });
+
+  test("hello world", () => {
+    const ast = baseParse("<p>hi,{{message}}</p>");
+
+    expect(ast.children[0]).toStrictEqual({
+      type: NodeTypes.ELEMENT,
+      tag: "p",
+      children: [
+        {
+          type: NodeTypes.TEXT,
+          content: "hi,",
+        },
+        {
+          type: NodeTypes.INTERPOLATION,
+          content: {
+            type: NodeTypes.SIMPLE_EXPRESSION,
+            content: "message",
+          },
+        },
+      ],
+    });
+  });
+
+  test("nestd elemnt ", () => {
+    const ast = baseParse("<p><div>hi</div>123{{message}}</p>");
+
+    expect(ast.children[0]).toStrictEqual({
+      type: NodeTypes.ELEMENT,
+      tag: "p",
+      children: [
+        {
+          type: NodeTypes.ELEMENT,
+          tag: "div",
+          children: [
+            {
+              type: NodeTypes.TEXT,
+              content: "hi",
+            },
+          ],
+        },
+        {
+          type: NodeTypes.TEXT,
+          content: "123",
+        },
+        {
+          type: NodeTypes.INTERPOLATION,
+          content: {
+            type: NodeTypes.SIMPLE_EXPRESSION,
+            content: "message",
+          },
+        },
+      ],
+    });
+  });
+
+  test.only("should throw error when lack end tag", () => {
+    expect(() => {
+      baseParse("<p><span></p>");
+    }).toThrow(`缺少结束标签:span`);
   });
 });
