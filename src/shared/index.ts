@@ -1,3 +1,5 @@
+export const isString = (val) => typeof val === "string";
+
 export const extend = Object.assign;
 
 export const isObject = (val) => {
