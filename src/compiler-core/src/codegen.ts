@@ -49,21 +49,35 @@ function genNode(node: any, context) {
       break;
     case NodeTypes.ELEMENT:
       genElement(node, context);
+      break;
+    case NodeTypes.COMPOUND_EXPRESSION:
+      genCompundExpression(node, context);
+      break;
     default:
       break;
   }
 }
+
+function genCompundExpression(node, context) {
+  const { children } = node;
+  const { push } = context;
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    if (isString(child)) {
+      push(child);
+    } else {
+      genNode(child, context);
+    }
+  }
+}
+
 function genElement(node, context) {
   const { push, helper } = context;
   const { tag, props, children } = node;
-  push(`${helper(CREAT_ELEMENT_VNODE)}('${tag}', null, `);
-  // push(`${helper(CREAT_ELEMENT_VNODE)}(`);
-  // genNodeList(genNullableArgs([tag, props, children]), context);
-
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    genNode(child, context)
-  }
+  // push(`${helper(CREAT_ELEMENT_VNODE)}('${tag}', ${props}, `);
+  push(`${helper(CREAT_ELEMENT_VNODE)}(`);
+  genNodeList(genNullableArgs([tag, props, children]), context);
+  // genNode(children, context);
 
   push(")");
 }

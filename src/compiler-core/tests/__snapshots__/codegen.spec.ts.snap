@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`code gen element 1`] = `
-"const { creatElementVnode: creatElementVnode, toDisplayString: toDisplayString } = Vue
-return function render(_ctx, _cache){return _creatElementVnode('div', null, 'hi, '_toDisplayString(message))}"
+"const { toDisplayString: toDisplayString, creatElementVnode: creatElementVnode } = Vue
+return function render(_ctx, _cache){return _creatElementVnode('div', null, 'hi, ' + _toDisplayString(_ctx.message))}"
 `;
 
 exports[`code gen happy path 1`] = `

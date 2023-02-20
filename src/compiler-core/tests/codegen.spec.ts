@@ -3,6 +3,7 @@ import { baseParse } from "../src/parse";
 import { transform } from "../src/transform";
 import { transformElment } from "../src/transforms/transformElement";
 import { transformExpression } from "../src/transforms/transformExpression";
+import { transformText } from "../src/transforms/transformText";
 
 describe("code gen", () => {
   it("happy path", () => {
@@ -29,7 +30,7 @@ describe("code gen", () => {
   it.only("element", () => {
     const ast = baseParse("<div>hi, {{message}}</div>");
     transform(ast, {
-      nodeTransforms: [transformElment],
+      nodeTransforms: [transformExpression, transformElment, transformText],
     });
     const { code } = genarator(ast);
 

@@ -1,8 +1,26 @@
-import { NodeTypes } from "../ast";
-import { CREAT_ELEMENT_VNODE } from "../runtimeHelper";
+import { createVnodeCall, NodeTypes } from "../ast";
 
 export function transformElment(node, context) {
   if (node.type === NodeTypes.ELEMENT) {
-    context.helper(CREAT_ELEMENT_VNODE);
+    return () => {
+      // 中间处理层
+
+      // tag
+      const vnodeTag = `'${node.tag}'`;
+
+      // props
+      let vnodeProps;
+
+      // children
+      const children = node.children;
+      let vnodeChildren = children[0];
+
+      node.codegenNode = createVnodeCall(
+        context,
+        vnodeTag,
+        vnodeProps,
+        vnodeChildren
+      );
+    };
   }
 }

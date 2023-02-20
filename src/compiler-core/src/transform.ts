@@ -24,10 +24,12 @@ function createTransformContext(root: any, options: any) {
 function traverseNode(node: any, context: any) {
   // 执行一些指定的执行操作
   let nodeTransforms = context.nodeTransforms;
+  let exitFns: any = [];
   for (let i = 0; i < nodeTransforms.length; i++) {
     let transform = nodeTransforms[i];
     // 这里执行一些外部需要执行的插件
-    transform(node, context);
+    const onExit = transform(node, context);
+    if (onExit) exitFns.push(onExit);
   }
 
   switch (node.type) {
@@ -44,6 +46,11 @@ function traverseNode(node: any, context: any) {
     default:
       break;
   }
+
+  let i = exitFns.length;
+  while (i--) {
+    exitFns[i]();
+  }
 }
 
 function traverChildNode(node: any, context) {
@@ -54,5 +61,10 @@ function traverChildNode(node: any, context) {
   }
 }
 function createCodegenNode(root) {
-  root.codegenNode = root.children[0];
+  const child = root.children[0];
+  if (child.type === NodeTypes.ELEMENT) {
+    root.codegenNode = child.codegenNode;
+  } else {
+    root.codegenNode = root.children[0];
+  }
 }
