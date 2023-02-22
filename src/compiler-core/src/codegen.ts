@@ -26,7 +26,7 @@ export function genarator(ast) {
 function genFunctionPreamble(context: any, ast: any) {
   const VueBinging = "Vue";
   let { push } = context;
-  let aliasHelpers = (s) => `${helperMapName[s]}: ${helperMapName[s]}`;
+  let aliasHelpers = (s) => `${helperMapName[s]}: _${helperMapName[s]}`;
   if (ast.helpers.length > 0) {
     push(
       `const { ${ast.helpers.map(aliasHelpers).join(", ")} } = ${VueBinging}`

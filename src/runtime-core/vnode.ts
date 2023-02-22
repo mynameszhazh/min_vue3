@@ -3,6 +3,8 @@ export const Fragment = Symbol("Fragment");
 export const Text = Symbol("Text");
 export const EMPTY_OBJ = {};
 
+export { createVnode as createElementVNode }
+
 export function createVnode(type, props?, children?) {
   let vnode = {
     type,
