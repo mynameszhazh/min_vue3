@@ -1,4 +1,5 @@
 import { isReadonly, readonly } from "../src/reactive";
+import { vi } from "vitest";
 
 describe("readonly", () => {
   it("happy path", () => {
@@ -13,7 +14,7 @@ describe("readonly", () => {
   });
 
   it("warn then call readonly", () => {
-    console.warn = jest.fn();
+    console.warn = vi.fn();
     const original = { foo: 1, bar: { baz: 2 } };
     const wrapped = readonly(original);
     wrapped.foo++;

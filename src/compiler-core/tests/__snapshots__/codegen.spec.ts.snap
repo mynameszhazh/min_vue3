@@ -1,4 +1,9 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
+
+exports[`code gen > element 1`] = `
+"const { toDisplayString: _toDisplayString, createElementVNode: _createElementVNode } = Vue
+return function render(_ctx, _cache){return _createElementVNode('div', null, 'hi, ' + _toDisplayString(_ctx.message))}"
+`;
 
 exports[`code gen element 1`] = `
 "const { toDisplayString: toDisplayString, creatElementVnode: creatElementVnode } = Vue

@@ -1,6 +1,6 @@
 import { computed } from "../src/computed";
 import { reactive } from "../src/reactive";
-
+import { vi } from "vitest";
 describe("ref", () => {
   it("happy path", () => {
     // ref
@@ -19,7 +19,7 @@ describe("ref", () => {
     const value = reactive({
       foo: 1,
     });
-    const getter = jest.fn(() => value.foo);
+    const getter = vi.fn(() => value.foo);
     const cValue = computed(getter);
 
     // lazy
